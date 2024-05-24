@@ -1,0 +1,76 @@
+
+/* App.css */
+
+  
+
+body {
+    background-image: url('../../assets/leao.png');
+    background-size: cover; 
+    background-position: center 50px; 
+    height: 100vh;
+    margin: 0;
+    font-family: Arial, sans-serif;
+  }
+  
+.comanda-row {
+    background-color: #282c34; /* Dark background for contrast */
+    border-radius: 8px;
+    padding: 10px;
+    margin-bottom: 5px;
+    color: white;
+    font-weight: bold;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .lux-logo {
+    padding: 10px;
+    max-width:30%;
+    height: auto;
+    display: inline-block;
+  }
+  .comanda-row.top {
+    background-image: linear-gradient(to right, #245825, #55a359); /* Green gradient for top comanda */
+  }
+  .comanda-row.topM {
+    background-image: linear-gradient(to right, #796b1e, #c9c500); /* Green gradient for top comanda */
+  }
+  
+  .comanda-row.topF{
+    background-image: linear-gradient(to right, #680606, #c51212); /* Green gradient for top comanda */
+  }
+   
+
+  .title-container {
+    text-align: center;
+    margin-bottom: 16px;
+    background: linear-gradient(to right, #230049, #2575fc); /* Adjust the colors as needed */
+    padding: 8px 0;
+    border-radius: 8px; /* Optional: adds rounded corners */
+    color: white; /* Ensures text color stands out on the gradient */
+  }
+
+  .comanda-index {
+    padding-left: 20px;
+    font-size: 44px; /* Larger text for comanda index */
+  }
+  
+  .comanda-medium {
+    flex-grow: 1;
+    font-size: 38px; 
+    text-align: center;
+    align-items: center;
+  }
+  
+  .comanda-end {
+    font-size: 34px; 
+    color: rgb(3, 3, 3);
+    width: 300px; /* Fixed width for images */
+    height: 80px; /* Fixed height for images */
+    background-color: #fffefe; /* Fallback color */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 8px;
+  }
+  
