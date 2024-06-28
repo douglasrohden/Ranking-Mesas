@@ -1,9 +1,9 @@
 {
-  "name": "electron-app",
+  "name": "Lux",
   "version": "1.0.0",
-  "description": "An Electron application with React",
+  "description": "Criado por Douglas",
   "main": "./out/main/index.js",
-  "author": "example.com",
+  "author": "Douglas Rohden",
   "homepage": "https://www.electronjs.org",
   "scripts": {
     "format": "prettier --write .",
@@ -21,8 +21,10 @@
     "@electron-toolkit/preload": "^1.0.3",
     "@electron-toolkit/utils": "^1.0.2",
     "antd": "^5.5.2",
+    "express": "^4.19.2",
+    "mysql2": "^3.10.1",
     "react-modal": "^3.16.1",
-    "sequelize": "^6.32.0",
+    "sequelize": "^6.37.3",
     "sqlite3": "^5.1.6"
   },
   "devDependencies": {

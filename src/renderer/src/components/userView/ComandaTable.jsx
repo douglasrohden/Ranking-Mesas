@@ -61,9 +61,9 @@ export const ComandaTable = () => {
 
   return (
     <div>
-      <div className="title-container">
+      <div className="title-container2">
         <Col span={24} style={{ textAlign: 'center', padding: '8px 0' }}>
-          <Title level={4} style={{ margin: 0, color: 'white' }}>Lançamentos</Title>
+          <Title level={4} style={{ margin: 10, color: 'white' }}>Lançamentos</Title>
         </Col>
       </div>
       <Row align="middle" justify="center">

@@ -1,5 +1,5 @@
 appId: com.electron.app
-productName: electron-app
+productName: Lux - Lounge Bar
 directories:
   buildResources: build
 files:
@@ -12,7 +12,7 @@ asarUnpack:
   - resources/**
 afterSign: build/notarize.js
 win:
-  executableName: electron-app
+  executableName: Lux - Lounge Bar
 nsis:
   artifactName: ${name}-${version}-setup.${ext}
   shortcutName: ${productName}

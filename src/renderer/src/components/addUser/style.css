@@ -1,0 +1,54 @@
+header{
+    background-color: white;
+    text-transform: uppercase;
+}
+
+.input-white {
+    color: #FFF;
+  }
+
+  .label-white .ant-form-item-label > label {
+    color: #FFF;
+    font-size: x-large;
+    font-weight: 400;
+  } 
+  
+  .title-container2 {
+  margin-Top:220px;
+    width: 100%;
+    padding: 8px 0;
+    text-align: center;
+  }
+  .footer-button {
+    position: fixed;
+    bottom: 0;
+    width: 80px; 
+    left: 0;
+    margin-left: 20px;
+    margin-bottom: 10px;
+    text-align: center;
+    background-color: #0b8a60;
+    border-top: 1px solid #d9d9d9;
+    z-index: 1000; /* Ensure the button is on top of other elements */
+}
+
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
+
+.spinner {
+  border: 16px solid #f3f3f3;
+  border-top: 16px solid #3498db;
+  border-radius: 50%;
+  width: 120px;
+  height: 120px;
+  animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}

@@ -1,5 +1,5 @@
 import { Sequelize } from "sequelize";
-import { sequelize } from "../db/database";
+import { sequelize } from "../db/database"; // ajuste o caminho conforme necessário
 
 export const Comanda = sequelize.define('Comanda', {
     comanda: {
@@ -11,8 +11,7 @@ export const Comanda = sequelize.define('Comanda', {
       allowNull: false
     },
     valor: {
-        type: Sequelize.STRING,
-        allowNull: false
-
+      type: Sequelize.STRING,
+      allowNull: false
     }
-  });
+});

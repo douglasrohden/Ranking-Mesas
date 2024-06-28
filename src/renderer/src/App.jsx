@@ -12,19 +12,8 @@ Modal.setAppElement('#root');
 
 function App() {
   const { onUserView, onAddUserView, showComandaTable, view } = useVisibility();
-  const [isBlocked, setIsBlocked] = useState(false);
 
   // Define the starting date as 27/05/2024
-  const startDate = new Date('2024-05-27');
-  const expirationDate = new Date(startDate);
-  expirationDate.setDate(startDate.getDate() + 30);
-
-  useEffect(() => {
-    const currentDate = new Date();
-    if (currentDate > expirationDate) {
-      setIsBlocked(true);
-    }
-  }, [expirationDate]);
 
   const renderComponent = () => {
     switch (view) {
@@ -39,25 +28,17 @@ function App() {
     }
   };
 
-  if (isBlocked) {
-    return (
-      <Modal
-        isOpen={true}
-        contentLabel="Access Blocked"
-        className="modal"
-        overlayClassName="overlay"
-      >
-        <h2>Entre em contato</h2>
-        <p>66 99634-0586</p>
-      </Modal>
-    );
-  }
+
 
   return (
-    <>
-      <TitleForm onUserView={onUserView} onAddUserView={onAddUserView} showComandaTable={showComandaTable} />
-      {renderComponent()}
-    </>
+    <div className="container">
+      <div className="content">
+        {renderComponent()}
+      </div>
+      <div className="footer">
+        <TitleForm onUserView={onUserView} onAddUserView={onAddUserView} showComandaTable={showComandaTable} />
+      </div>
+    </div>
   );
 }
 

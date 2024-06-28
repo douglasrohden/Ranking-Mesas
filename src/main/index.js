@@ -1,12 +1,23 @@
-import { app, shell, BrowserWindow, ipcMain } from 'electron'
+import { app, shell, BrowserWindow, ipcMain, dialog } from 'electron';
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 import { Comanda } from './model/user.model'
+import { License  } from './model/license.model'
 import { initDb } from './db/database'
 
-const llamarNode = async (e, data) => {
+const isLicenseValid = async () => {
+  try {
+    const license = await License.findOne(); 
+    return license && license.isValid;
+  } catch (error) {
+    console.error('Erro ao verificar a licença:', error);
+    return false;
+  }
+};
 
+const llamarNode = async (e, data) => {
+ 
   const comanda = new Comanda({ ...data });
 
   try {
@@ -27,8 +38,7 @@ const obtenerUsuarioById = async (e, index) => {
 }
 const getComandas = async (e) => {
   try {
-    const allComandas = await Comanda.findAll();
-    console.log("🚀 ~ file: index.js:32 ~ getComandas ~ allComandas:", allComandas)
+    const allComandas = await Comanda.findAll(); 
 
     return allComandas;
   } catch (error) {
@@ -48,8 +58,18 @@ const limparComandas = async () => {
   }
 }
 
-function createWindow() {
-  // Create the browser window.
+
+async function createWindow() {
+  if (!(await isLicenseValid())) {
+    console.error('Licença inválida.');
+    dialog.showMessageBox({
+      type: 'error',
+      title: 'Licença Inválida',
+      message: 'A licença do aplicativo é inválida. Por favor, contate o suporte.',
+    });
+    return;
+  }
+
   const mainWindow = new BrowserWindow({
     width: 900,
     height: 670,
@@ -59,69 +79,67 @@ function createWindow() {
     webPreferences: {
       preload: join(__dirname, '../preload/index.js'),
       sandbox: false,
-
-
-    }
-  })
+    },
+  });
 
   mainWindow.on('ready-to-show', () => {
-    mainWindow.show()
-
-  })
+    mainWindow.show();
+  });
 
   mainWindow.webContents.setWindowOpenHandler((details) => {
-    shell.openExternal(details.url)
-    return { action: 'deny' }
-  })
+    shell.openExternal(details.url);
+    return { action: 'deny' };
+  });
 
-  // HMR for renderer base on electron-vite cli.
   // Load the remote URL for development or the local html file for production.
   if (is.dev && process.env['ELECTRON_RENDERER_URL']) {
-    mainWindow.loadURL(process.env['ELECTRON_RENDERER_URL'])
+    mainWindow.loadURL(process.env['ELECTRON_RENDERER_URL']);
   } else {
-    mainWindow.loadFile(join(__dirname, '../renderer/index.html'))
+    mainWindow.loadFile(join(__dirname, '../renderer/index.html'));
   }
 }
 
-// This method will be called when Electron has finished
-// initialization and is ready to create browser windows.
-// Some APIs can only be used after this event occurs.
 app.whenReady().then(() => {
-
   initDb();
-  // Set app user model id for windows
-  electronApp.setAppUserModelId('com.electron')
 
-  // Default open or close DevTools by F12 in development
-  // and ignore CommandOrControl + R in production.
-  // see https://github.com/alex8088/electron-toolkit/tree/master/packages/utils
+  electronApp.setAppUserModelId('com.electron');
+
   app.on('browser-window-created', (_, window) => {
-    optimizer.watchWindowShortcuts(window)
-  })
+    optimizer.watchWindowShortcuts(window);
+  });
 
-  createWindow()
+  createWindow();
 
   app.on('activate', function () {
-    // On macOS it's common to re-create a window in the app when the
-    // dock icon is clicked and there are no other windows open.
-    if (BrowserWindow.getAllWindows().length === 0) createWindow()
-  })
-  //ELECTRON LLAMADAS
+    if (BrowserWindow.getAllWindows().length === 0) createWindow();
+  });
 
-  ipcMain.on('postData', llamarNode)
-  ipcMain.handle('getData', obtenerUsuarioById)
+  ipcMain.on('postData', llamarNode);
+  ipcMain.handle('getData', obtenerUsuarioById);
+  ipcMain.handle('getComandas', async () => {
+    try {
+      const comandas = await getComandas();
+      return comandas;
+    } catch (error) {
+      console.error(error);
+      return { error: error.message };
+    }
+  });
+  ipcMain.handle('limparComandas', async () => {
+    try {
+      await limparComandas();
+      return { success: true };
+    } catch (error) {
+      console.error(error);
+      return { error: error.message };
+    }
+  });
+});
 
-
-
-
-
-
-})
 
 ipcMain.handle('getComandas', async (event) => {
   try {
-    const comandas = await getComandas();
-    console.log("🚀 ~ file: index.js:115 ~ ipcMain.handle ~ comandas:", comandas)
+    const comandas = await getComandas(); 
     return comandas;
   } catch (error) {
     console.error(error);

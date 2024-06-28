@@ -1,76 +1,136 @@
-
-/* App.css */
-
-  
-
 body {
-    background-image: url('../../assets/leao.png');
-    background-size: cover; 
-    background-position: center 50px; 
-    height: 100vh;
-    margin: 0;
-    font-family: Arial, sans-serif;
+  background-image: url('../../assets/fundo-app.png');
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-position: top;
+  height: 100vh;
+  margin: 0;
+  font-family: Arial, sans-serif;
+}
+
+@media (max-width: 768px) {
+  body {
+    background-size: contain;
+    background-position: top;
   }
-  
+}
+
+.comanda-container {
+  text-align: center;
+  margin-top: 225px;
+  padding: 2px 0;
+}
+
+.row {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
 .comanda-row {
-    background-color: #282c34; /* Dark background for contrast */
-    border-radius: 8px;
-    padding: 10px;
-    margin-bottom: 5px;
-    color: white;
-    font-weight: bold;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-  .lux-logo {
-    padding: 10px;
-    max-width:30%;
-    height: auto;
-    display: inline-block;
-  }
-  .comanda-row.top {
-    background-image: linear-gradient(to right, #245825, #55a359); /* Green gradient for top comanda */
-  }
-  .comanda-row.topM {
-    background-image: linear-gradient(to right, #796b1e, #c9c500); /* Green gradient for top comanda */
-  }
-  
-  .comanda-row.topF{
-    background-image: linear-gradient(to right, #680606, #c51212); /* Green gradient for top comanda */
-  }
-   
+  margin: 10px;
+  padding: 10px;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  color: white;
+}
 
-  .title-container {
-    text-align: center;
-    margin-bottom: 16px;
-    background: linear-gradient(to right, #230049, #2575fc); /* Adjust the colors as needed */
-    padding: 8px 0;
-    border-radius: 8px; /* Optional: adds rounded corners */
-    color: white; /* Ensures text color stands out on the gradient */
-  }
+.comanda-row.top {
+  align-items: center;
+  height: 220px;
+  width: 800px;
+}
 
-  .comanda-index {
-    padding-left: 20px;
-    font-size: 44px; /* Larger text for comanda index */
-  }
-  
-  .comanda-medium {
-    flex-grow: 1;
-    font-size: 38px; 
-    text-align: center;
-    align-items: center;
-  }
-  
-  .comanda-end {
-    font-size: 34px; 
-    color: rgb(3, 3, 3);
-    width: 300px; /* Fixed width for images */
-    height: 80px; /* Fixed height for images */
-    background-color: #fffefe; /* Fallback color */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border-radius: 8px;
-  }
-  
+.second-row-container, .third-row-container {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.comanda-row.second-row {
+  height: 80px;
+  width: 600px;
+}
+
+.comanda-row.third-row {
+  height: 80px;
+  width: 600px;
+}
+
+.comanda-medium,
+.comanda-end {
+  text-align: center;
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1;
+}
+
+.comanda-index {
+  margin-top: 15%;
+  font-weight: bold;
+  font-size: 24px;
+  color:#000;
+}
+
+.comanda-index1 {
+  margin-top: 15%;
+  font-weight: bold;
+  font-size: 45px;
+  color:#000;
+}
+
+.comanda-medium {
+  margin-left: 15%;
+  font-size: 35px;
+  font-weight: bold; color:#000;
+}
+
+.comanda-end {
+  font-size: 35px;
+  font-weight: bold; color:#000;
+}
+
+.comanda-end1 {
+  margin-top: 15%;
+  margin-right: 5%;
+  font-size: 60px;
+  font-weight: bold; color:#000;
+}
+
+.comanda-number {
+  margin-left: 2%;
+  margin-bottom: 1%;
+  font-size:50px;
+  font-weight: bold;color:#000;
+}
+/* Custom CSS Spinner */
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.spinner {
+  border: 16px solid #f3f3f3;
+  border-top: 16px solid #3498db;
+  border-radius: 50%;
+  width: 120px;
+  height: 120px;
+  animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}

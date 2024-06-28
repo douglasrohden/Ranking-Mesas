@@ -1,23 +1,19 @@
-import { app } from 'electron'
-const path = require('path');
+const { Sequelize } = require('sequelize');
 
-// Configura el directorio de datos de SQLite
-const userDataPath = app.getPath('userData');
-const dbPath = path.join(userDataPath, 'comandas.sqlite'); 
-
-// Configura Sequelize con SQLite
-const Sequelize = require('sequelize');
-export const sequelize = new Sequelize({
-  dialect: 'sqlite',
-  storage: dbPath
+// Configurar Sequelize com MySQL
+const sequelize = new Sequelize('admin_lux', 'admin_lux', 'lux@@123', {
+  host: '93.188.165.214',
+  dialect: 'mysql',
+  logging: false, // para não logar queries no console
 });
+const initDb = async () => {
+  try {
+    await sequelize.authenticate();
+    await sequelize.sync();
+    console.log("Banco Criado");
+  } catch (error) {
+    console.error("Erro ao criar Banco", error);
+  }
+};
 
-export const initDb = () =>{
-    sequelize.sync().then(() => {
-        console.log("Banco Criado");
-      }).catch((error) => {
-        console.error("Erro criar Banco Criado", error);
-      });
-
-}
-
+export { sequelize, initDb };

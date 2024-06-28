@@ -7,6 +7,7 @@ export const AddUserForm = () => {
     const [api, contextHolder] = notification.useNotification();
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [isClearModalVisible, setIsClearModalVisible] = useState(false);
+    const [clearing, setClearing] = useState(false);
     const [form] = Form.useForm();
 
     const openNotification = () => {
@@ -43,11 +44,12 @@ export const AddUserForm = () => {
         setIsModalVisible(false);
     };
 
-    const showClearModal = () => {
+    const showClearModal = () => { 
         setIsClearModalVisible(true);
     };
 
     const handleClearOk = async () => {
+        setClearing(true);
         try {
             await window.electronFront.limparComandas();
             notification.success({
@@ -61,6 +63,8 @@ export const AddUserForm = () => {
                 message: 'Erro',
                 description: 'Ocorreu um erro ao tentar apagar as comandas.',
             });
+        } finally {
+            setClearing(false);
         }
     };
 
@@ -133,7 +137,6 @@ export const AddUserForm = () => {
                         decimalSeparator=","
                         step="0.01"
                         stringMode
-
                         parser={value =>
                             value.replace(/\R\$\s?|(\.)/g, '').replace(',', '.')
                         }
@@ -159,11 +162,12 @@ export const AddUserForm = () => {
                 <p>Você realmente deseja salvar?</p>
             </Modal>
 
-
             <div className="footer-button">
-                <Button type="danger"
+                <Button
+                    type="danger"
                     style={{ color: '#FFF' }}
-                    onClick={showClearModal}>
+                    onClick={showClearModal}
+                >
                     Limpar
                 </Button>
             </div>
@@ -176,7 +180,13 @@ export const AddUserForm = () => {
                 okText="Limpar"
                 cancelText="Cancelar"
             >
-                <p>Você realmente deseja limpar todas as comandas?</p>
+                {clearing ? (
+                    <div className="loading-container">
+                        <div className="spinner"></div>
+                    </div>
+                ) : (
+                    <p>Você realmente deseja limpar todas as comandas?</p>
+                )}
             </Modal>
         </>
     );
