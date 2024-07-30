@@ -3,21 +3,35 @@ import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 import { Comanda } from './model/user.model'
-import { License  } from './model/license.model'
+import { License } from './model/license.model'
 import { initDb } from './db/database'
 
 const isLicenseValid = async () => {
   try {
-    const license = await License.findOne(); 
+    const license = await License.findOne();
     return license && license.isValid;
   } catch (error) {
     console.error('Erro ao verificar a licença:', error);
     return false;
   }
 };
+const checkLicense = async () => {
+  if (!(await isLicenseValid())) {
+    console.error('Licença inválida.');
+    dialog.showMessageBox({
+      type: 'error',
+      title: 'Licença Inválida',
+      message: 'A licença do aplicativo é inválida. Por favor, contate o suporte, 66-99623 9444.',
+    });
 
-const llamarNode = async (e, data) => {
- 
+    return false;
+  } else {
+    return true;
+  }
+
+}
+const adicionarComanda = async (e, data) => {
+  if (!(await checkLicense())) return;
   const comanda = new Comanda({ ...data });
 
   try {
@@ -28,17 +42,22 @@ const llamarNode = async (e, data) => {
     console.error('Erro ao salvar a comanda:' + error);
   }
 }
-const obtenerUsuarioById = async (e, index) => {
+const getNomeComandaById = async (e, comanda) => {
   try {
-    const usuarioById = await Comanda.findByPk(index); 
-    return usuarioById;
+    const usuarioByComanda = await Comanda.findOne({
+      where: { comanda: comanda }
+    });
+    console.log("teste", usuarioByComanda);
+    return usuarioByComanda;
   } catch (error) {
-
+    console.error('Error fetching comanda:', error);
   }
 }
+
 const getComandas = async (e) => {
+
   try {
-    const allComandas = await Comanda.findAll(); 
+    const allComandas = await Comanda.findAll();
 
     return allComandas;
   } catch (error) {
@@ -49,6 +68,8 @@ const getComandas = async (e) => {
 
 
 const limparComandas = async () => {
+
+  if (!(await checkLicense())) return;
   try {
     await Comanda.destroy({ where: {}, truncate: true });
     console.log('Todas as comandas foram apagadas.');
@@ -60,19 +81,10 @@ const limparComandas = async () => {
 
 
 async function createWindow() {
-  if (!(await isLicenseValid())) {
-    console.error('Licença inválida.');
-    dialog.showMessageBox({
-      type: 'error',
-      title: 'Licença Inválida',
-      message: 'A licença do aplicativo é inválida. Por favor, contate o suporte.',
-    });
-    return;
-  }
 
   const mainWindow = new BrowserWindow({
-    width: 900,
-    height: 670,
+    width: 1280,
+    height: 720,
     show: false,
     autoHideMenuBar: true,
     ...(process.platform === 'linux' ? { icon } : {}),
@@ -90,8 +102,7 @@ async function createWindow() {
     shell.openExternal(details.url);
     return { action: 'deny' };
   });
-
-  // Load the remote URL for development or the local html file for production.
+  
   if (is.dev && process.env['ELECTRON_RENDERER_URL']) {
     mainWindow.loadURL(process.env['ELECTRON_RENDERER_URL']);
   } else {
@@ -114,38 +125,23 @@ app.whenReady().then(() => {
     if (BrowserWindow.getAllWindows().length === 0) createWindow();
   });
 
-  ipcMain.on('postData', llamarNode);
-  ipcMain.handle('getData', obtenerUsuarioById);
-  ipcMain.handle('getComandas', async () => {
-    try {
-      const comandas = await getComandas();
-      return comandas;
-    } catch (error) {
-      console.error(error);
-      return { error: error.message };
-    }
-  });
-  ipcMain.handle('limparComandas', async () => {
-    try {
-      await limparComandas();
-      return { success: true };
-    } catch (error) {
-      console.error(error);
-      return { error: error.message };
-    }
-  });
+
+
 });
 
+ipcMain.on('postData', adicionarComanda);
+ipcMain.handle('getData', getNomeComandaById);
 
-ipcMain.handle('getComandas', async (event) => {
+ipcMain.handle('getComandas', async () => {
   try {
-    const comandas = await getComandas(); 
+    const comandas = await getComandas();
     return comandas;
   } catch (error) {
     console.error(error);
-    return { error: error.message }; // Retorna um objeto de erro que pode ser tratado pelo cliente
+    return { error: error.message };
   }
 });
+
 ipcMain.handle('limparComandas', async (event) => {
   try {
     await limparComandas();

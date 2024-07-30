@@ -1,4 +1,4 @@
-const { Sequelize } = require('sequelize');
+import { Sequelize } from 'sequelize';
 
 // Configurar Sequelize com MySQL
 const sequelize = new Sequelize('admin_lux', 'admin_lux', 'lux@@123', {
@@ -10,7 +10,7 @@ const initDb = async () => {
   try {
     await sequelize.authenticate();
     await sequelize.sync();
-    console.log("Banco Criado");
+    console.log("Conectado ");
   } catch (error) {
     console.error("Erro ao criar Banco", error);
   }

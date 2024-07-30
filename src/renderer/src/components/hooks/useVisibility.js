@@ -10,8 +10,7 @@ export const useVisibility = () => {
   const [view, setView] = useState('addUser'); // 'addUser', 'userView', 'comandaTable'
 
   const onUserView = async (modal) => {
-    const isDataExist = await useValidedInitialData();
-    console.log("🚀 ~ file: useVisibility.js:14 ~ onUserView ~ isDataExist:", isDataExist)
+    const isDataExist = await useValidedInitialData(); 
     if (isDataExist) {
       setView('userView');
     } else {

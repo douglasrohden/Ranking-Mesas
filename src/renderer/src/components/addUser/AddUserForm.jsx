@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { Button, Form, Input, Modal, notification, InputNumber } from 'antd';
 import { SmileOutlined } from '@ant-design/icons';
 import './style.css';
@@ -8,7 +8,11 @@ export const AddUserForm = () => {
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [isClearModalVisible, setIsClearModalVisible] = useState(false);
     const [clearing, setClearing] = useState(false);
+    const [disableDescricao, setDisableDescricao] = useState(false);
     const [form] = Form.useForm();
+    const comandaRef = useRef(null);
+    const descricaoRef = useRef(null);
+    const valorRef = useRef(null);
 
     const openNotification = () => {
         api.open({
@@ -31,20 +35,22 @@ export const AddUserForm = () => {
     const handleOk = async () => {
         try {
             const values = await form.validateFields();
-            await window.electronFront.guardarInformacion(values);
+            await window.electronFront.salvarComanda(values);
             openNotification();
             form.resetFields();
             setIsModalVisible(false);
         } catch (errorInfo) {
             console.error('Failed to save:', errorInfo);
         }
+
+        comandaRef.current.focus();
     };
 
     const handleCancel = () => {
         setIsModalVisible(false);
     };
 
-    const showClearModal = () => { 
+    const showClearModal = () => {
         setIsClearModalVisible(true);
     };
 
@@ -68,6 +74,25 @@ export const AddUserForm = () => {
         }
     };
 
+    const getComanda = async (e) => {
+
+        try {
+            let comanda = await window.electronFront.getComanda(e.target.value);
+            if (comanda && comanda.dataValues) {
+                setDisableDescricao(true);
+                form.setFieldsValue({ descricao: comanda.dataValues.descricao.toUpperCase() });
+                valorRef.current.focus();
+            } else {
+                form.setFieldsValue({ descricao: "" });
+                setDisableDescricao(false);
+                descricaoRef.current.focus();
+            }
+        } catch (error) {
+            console.error('Failed to fetch comanda:', error);
+        }
+    };
+
+
     const handleClearCancel = () => {
         setIsClearModalVisible(false);
     };
@@ -80,6 +105,14 @@ export const AddUserForm = () => {
             span: 8,
         },
     };
+
+    const focusDescricao = () => {
+        if (!descricaoRef.current) {
+            descricaoRef.current.focus();
+        } else {
+            valorRef.current.focus();
+        }
+    }
 
     return (
         <>
@@ -94,7 +127,7 @@ export const AddUserForm = () => {
                     name="comanda"
                     type="number"
                     className="label-white"
-                    label="Nº Comanda"
+                    label="Nº da Comanda"
                     rules={[
                         {
                             required: true,
@@ -104,22 +137,30 @@ export const AddUserForm = () => {
                 >
                     <InputNumber
                         style={{ width: '100%' }}
-                        min={0} // Define o valor mínimo permitido
-                        parser={value => value.replace(/\D/g, '')} // Remove caracteres não numéricos
+                        min={0}
+                        parser={(value) => value.replace(/\D/g, '')}
+                        ref={comandaRef}
+                        onPressEnter={getComanda}
                     />
                 </Form.Item>
                 <Form.Item
                     name="descricao"
-                    label="Observação"
+                    label="Nome do Camarote"
                     className="label-white"
                     rules={[
                         {
                             required: true,
-                            message: 'Por favor, insira uma observação',
+                            message: 'Por favor, insira um nome do Camarote',
                         },
                     ]}
                 >
-                    <Input />
+                    <Input
+                        disabled={disableDescricao}
+                        onPressEnter={focusDescricao}
+                        onChange={(e) => form.setFieldsValue({ descricao: e.target.value.toUpperCase() })}
+                        style={{ backgroundColor: '#f0f0f0', color: "#000", fontSize: '15px', fontWeight: 'bold' }}
+                        ref={descricaoRef}
+                    />
                 </Form.Item>
                 <Form.Item
                     name="valor"
@@ -137,9 +178,11 @@ export const AddUserForm = () => {
                         decimalSeparator=","
                         step="0.01"
                         stringMode
-                        parser={value =>
+                        parser={(value) =>
                             value.replace(/\R\$\s?|(\.)/g, '').replace(',', '.')
                         }
+                        onPressEnter={handleOk}
+                        ref={valorRef}
                     />
                 </Form.Item>
 
@@ -153,7 +196,7 @@ export const AddUserForm = () => {
 
             <Modal
                 title="Confirmar Salvar"
-                visible={isModalVisible}
+                open={isModalVisible}
                 onOk={handleOk}
                 onCancel={handleCancel}
                 okText="Salvar"
@@ -174,7 +217,7 @@ export const AddUserForm = () => {
 
             <Modal
                 title="Confirmar Limpeza"
-                visible={isClearModalVisible}
+                open={isClearModalVisible}
                 onOk={handleClearOk}
                 onCancel={handleClearCancel}
                 okText="Limpar"
